@@ -1,5 +1,5 @@
 # online-esn
-Echo state networks (ESN) provide an architecture and supervised learning principle for more energy efficient recurrent neural networks (RNNs). This repository implements an ESN along with a variety of different online learning algorithms for temporal classification tasks.
+Echo State Networks (ESN) provide an architecture and supervised learning principle for more energy efficient recurrent neural networks (RNNs). This repository implements an ESN along with a variety of different online learning algorithms for temporal classification tasks.
 
 The main idea is:
 
