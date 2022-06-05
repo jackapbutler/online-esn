@@ -6,9 +6,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sklearn.model_selection as sk_mod
 import torch
-import networks as nets
 import torch.nn.functional as F
 import torch.utils.data as torch_data
+
+import networks as nets
 
 
 @dataclass
@@ -16,10 +17,7 @@ class LossCriterion:
     """Loss criterion dataclass for Pytorch"""
 
     def __init__(
-        self,
-        function=F.cross_entropy,
-        l1_lambda: float = 0.2,
-        l2_lambda: float = 0.5,
+        self, function=F.cross_entropy, l1_lambda: float = 0.2, l2_lambda: float = 0.5,
     ):
         self.function = function
         self.use_l1 = bool(l1_lambda)
@@ -182,11 +180,7 @@ class Classifier(torch.nn.Module):
     ) -> np.ndarray:
         """Run a training session using the `fit()` method with the specified parameters"""
         self.prepare_dataloaders(
-            x_train,
-            x_valid,
-            y_train,
-            y_valid,
-            bs=kwargs.get("batch_size", 100),
+            x_train, x_valid, y_train, y_valid, bs=kwargs.get("batch_size", 100),
         )
 
         return self.fit(
