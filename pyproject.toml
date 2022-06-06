@@ -14,6 +14,8 @@ isort = "^5.10.1"
 matplotlib = "^3.5.2"
 scipy = "^1.8.1"
 scikit-learn = "^1.1.1"
+librosa = "^0.9.1"
+ipykernel = "^6.13.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
