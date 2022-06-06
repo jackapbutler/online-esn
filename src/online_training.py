@@ -1,6 +1,6 @@
 """Module for testing and training online Pytorch linear classification models"""
 from dataclasses import dataclass
-from typing import Dict, Tuple
+from typing import Any, Dict, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,7 +9,7 @@ import torch
 import torch.nn.functional as F
 import torch.utils.data as torch_data
 
-import networks as nets
+import src.networks as nets
 
 
 @dataclass
@@ -17,7 +17,10 @@ class LossCriterion:
     """Loss criterion dataclass for Pytorch"""
 
     def __init__(
-        self, function=F.cross_entropy, l1_lambda: float = 0.2, l2_lambda: float = 0.5,
+        self,
+        function=F.cross_entropy,
+        l1_lambda: float = 0.2,
+        l2_lambda: float = 0.5,
     ):
         self.function = function
         self.use_l1 = bool(l1_lambda)
@@ -73,14 +76,14 @@ class Classifier(torch.nn.Module):
         y_train: np.ndarray,
         y_valid: np.ndarray,
         bs: int,
-    ) -> Tuple[torch_data.DataLoader, torch_data.DataLoader]:
+    ):
         """Prepares Pytorch training & validation DataLoaders for model training"""
-        x_train, y_train, x_valid, y_valid = map(
+        x_train_tens, y_train_tens, x_valid_tens, y_valid_tens = map(
             torch.tensor, (x_train, y_train, x_valid, y_valid)
         )
 
-        train_ds = torch_data.TensorDataset(x_train, y_train)
-        valid_ds = torch_data.TensorDataset(x_valid, y_valid)
+        train_ds = torch_data.TensorDataset(x_train_tens, y_train_tens)
+        valid_ds = torch_data.TensorDataset(x_valid_tens, y_valid_tens)
 
         self.train_dl = torch_data.DataLoader(train_ds, batch_size=bs, shuffle=True)
         self.valid_dl = torch_data.DataLoader(valid_ds, batch_size=bs * 2)
@@ -89,7 +92,7 @@ class Classifier(torch.nn.Module):
         """Get the current validation loss and accuracy for the model"""
         with torch.no_grad():
             valid_loss = 0.0
-            valid_acc = 0
+            valid_acc = 0.0
             for xb, yb in self.valid_dl:
                 pred = self.model(xb)
                 valid_loss += loss_crit.function(pred, yb).item()
@@ -101,7 +104,7 @@ class Classifier(torch.nn.Module):
         self,
         max_epochs: int,
         loss_critierion: LossCriterion,
-        optimiser,
+        optimiser: torch.optim.Optimizer,
         verbose: bool = False,
         parameter_save_path: str = None,
     ) -> np.ndarray:
@@ -180,7 +183,11 @@ class Classifier(torch.nn.Module):
     ) -> np.ndarray:
         """Run a training session using the `fit()` method with the specified parameters"""
         self.prepare_dataloaders(
-            x_train, x_valid, y_train, y_valid, bs=kwargs.get("batch_size", 100),
+            x_train,
+            x_valid,
+            y_train,
+            y_valid,
+            bs=kwargs.get("batch_size", 100),
         )
 
         return self.fit(
@@ -211,7 +218,16 @@ class Classifier(torch.nn.Module):
         y_train_1h: np.ndarray,
         x_test: np.ndarray,
         y_test_1h: np.ndarray,
-    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    ) -> Tuple[
+        np.ndarray[Any, np.dtype[Any]],
+        np.ndarray[Any, np.dtype[np.signedinteger[Any]]],
+        np.ndarray[Any, np.dtype[Any]],
+        np.ndarray[Any, np.dtype[np.signedinteger[Any]]],
+        np.ndarray,
+        np.ndarray[Any, np.dtype[np.signedinteger[Any]]],
+        np.ndarray,
+        np.ndarray,
+    ]:
         """
         Split and vertically stack the input & output matrices into training, validation and testing sets.
         Note: This method uses stratified sampling of the input labels.
@@ -309,8 +325,8 @@ def plot_results_array(results_arr: np.ndarray):
     ax1.plot(results_arr[0], results_arr[2], label="validation")
     ax1.set(xlabel="Epochs", ylabel="Loss")
 
-    ax2.plot(results_arr[0], results_arr[3], label="training")
-    ax2.plot(results_arr[0], results_arr[4], label="validation")
+    ax2.plot(results_arr[0], 100 * results_arr[3], label="training")
+    ax2.plot(results_arr[0], 100 * results_arr[4], label="validation")
     ax2.set(xlabel="Epochs", ylabel="Accuracy %")
 
     plt.legend(["Training", "Validation"])
@@ -340,9 +356,7 @@ def plot_results_json(result_json: Dict):
     plt.show()
 
 
-def torch_summarize(
-    model: torch.nn.Sequential, show_weights=True, show_parameters=True
-) -> str:
+def torch_summarize(model, show_weights=True, show_parameters=True) -> str:
     """Summarizes torch model by showing trainable parameters and weights."""
     tmpstr = model.__class__.__name__ + " (\n"
     for key, module in model._modules.items():

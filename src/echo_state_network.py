@@ -121,9 +121,7 @@ class ESN:
 
         return s_output.numpy()
 
-    def transform(
-        self, x_input: np.ndarray, **kwargs
-    ) -> Tuple[np.ndarray, torch.Tensor]:
+    def transform(self, x_input: np.ndarray) -> np.ndarray:
         """
         Transform observations using the ESN and update the reservoir hidden states.
 
@@ -162,4 +160,4 @@ class ESN:
                 # reset states after each sample
                 self.reset_states()
 
-            return np.array(output), self.hidden
+            return np.array(output)

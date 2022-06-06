@@ -40,8 +40,8 @@ def load_and_process_mnist_col_by_col(
     test_col_by_col = utils.convert_2d_to_nested_1d(x_test, N_COLS)
 
     y_train, y_test = (
-        np.copy(l_train.flatten()).astype(np.long),
-        np.copy(l_test.flatten()).astype(np.long),
+        np.copy(l_train.flatten()).astype(np.int64),
+        np.copy(l_test.flatten()).astype(np.int64),
     )
     y_train_labels = np.repeat(utils.torch_one_hot(y_train), repeats=N_COLS, axis=0)
     y_test_labels = np.repeat(utils.torch_one_hot(y_test), repeats=N_COLS, axis=0)

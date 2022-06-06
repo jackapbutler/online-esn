@@ -2,6 +2,7 @@ import os
 from typing import List, Tuple
 
 import numpy as np
+
 import src.datasets.utils as utils
 
 SPEAKERS_SUBSET = ["f1", "f2", "f3", "f4", "f5"]  # to replicate previous paper

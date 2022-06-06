@@ -1,7 +1,7 @@
+import librosa
 import numpy as np
 import torch
 import torch.nn.functional as F
-import librosa
 
 
 class Normaliser:
@@ -61,7 +61,7 @@ def create_1hot_like(Nout, x, labels):
 def convert_2d_to_nested_1d(arr: np.ndarray, nested_dim: int) -> np.ndarray:
     """Convert a 2D NumPy array to a 1D array with nested 2D arrays"""
     n_digits = len(arr)
-    one_d_arr = np.empty((n_digits,), dtype=np.object)
+    one_d_arr = np.empty((n_digits,), dtype=object)
 
     for i in range(n_digits):
         one_d_arr[i] = arr.reshape(n_digits, nested_dim, nested_dim)[i, :, :]
