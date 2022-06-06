@@ -3,9 +3,11 @@ Echo State Networks (ESN) provide an architecture and supervised learning princi
 
 The main idea is:
 
-1. Drive a random, sparsely connected, fixed recurrent neural network with the input signal, thereby inducing in each neuron within this reservoir network a non-linear response signal. This combined response generates a high-dimensional representation of the data.
+1. Drive a random, sparsely connected, fixed recurrent neural network with the input signal, thereby inducing in each neuron within this reservoir network a non-linear response signal.
     
 2. Combine a desired output signal (labels) by a trainable parametric combination of all of these response signals.
+
+You can see an example workflow for the Ti46 dataset in `example.ipynb`.
 
 # System
 The below figure outlines an example of classifying columnwise Mnist digits using a single linear output layer. This implementation can achieve upwards of 95% on columnwise Mnist when the ESN is combined with a two layer MLP.
